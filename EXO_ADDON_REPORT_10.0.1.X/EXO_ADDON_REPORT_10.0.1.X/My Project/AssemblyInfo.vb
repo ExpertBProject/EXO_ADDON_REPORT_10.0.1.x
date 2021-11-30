@@ -8,10 +8,10 @@ Imports System.Runtime.InteropServices
 
 ' Revisar los valores de los atributos del ensamblado
 
-<Assembly: AssemblyTitle("EXO_ADDON_REPORT_9.1.1.0")> 
+<Assembly: AssemblyTitle("EXO_ADDON_REPORT_10.0.1.x")>
 <Assembly: AssemblyDescription("")>
 <Assembly: AssemblyCompany("EXPERT ONE")>
-<Assembly: AssemblyProduct("EXO_ADDON_REPORT_9.1.1.0")> 
+<Assembly: AssemblyProduct("EXO_ADDON_REPORT_10.0.1.x")>
 <Assembly: AssemblyCopyright("Copyright ©  2021")> 
 <Assembly: AssemblyTrademark("")> 
 
@@ -31,5 +31,5 @@ Imports System.Runtime.InteropServices
 ' mediante el carácter '*', como se muestra a continuación:
 ' <Assembly: AssemblyVersion("1.0.*")> 
 
-<Assembly: AssemblyVersion("9.1.1.002")>
-<Assembly: AssemblyFileVersion("9.1.1.002")>
+<Assembly: AssemblyVersion("10.0.4.002")>
+<Assembly: AssemblyFileVersion("10.0.4.002")>

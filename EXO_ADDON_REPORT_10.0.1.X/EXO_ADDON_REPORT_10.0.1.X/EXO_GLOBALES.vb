@@ -100,6 +100,8 @@ Public Class EXO_GLOBALES
         Dim oBlobParams As SAPbobsCOM.BlobParams = Nothing
         Dim oKeySegment As SAPbobsCOM.BlobTableKeySegment = Nothing
         Dim oBlob As SAPbobsCOM.Blob = Nothing
+        Dim sReportExiste As String = ""
+        Dim sSQL As String = ""
 #End Region
         Import_Report = False
         Try
@@ -125,7 +127,23 @@ Public Class EXO_GLOBALES
             Try
                 ' Add New object 
                 oReport.Category = SAPbobsCOM.ReportLayoutCategoryEnum.rlcCrystal
-                Dim oNewReportParams As SAPbobsCOM.ReportLayoutParams = oLayoutService.AddReportLayout(oReport)
+
+                'Comprobamos si Existe
+                sSQL = "SELECT ""DocCode"" FROM  """ & oCompanyDes.CompanyDB & """.""RDOC"" WHERE ""DocName""='" & oForm.DataSources.UserDataSources.Item("UDNOM").Value.ToString & "' "
+                sReportExiste = oObjGlobal.refDi.SQL.sqlStringB1(sSQL)
+                If sReportExiste <> "" Then
+                    Dim oExisteReportParams As SAPbobsCOM.ReportLayoutParams = CType(oLayoutService.GetDataInterface(SAPbobsCOM.ReportLayoutsServiceDataInterfaces.rlsdiReportLayoutParams), SAPbobsCOM.ReportLayoutParams)
+                    oExisteReportParams.LayoutCode = sReportExiste
+                    oLayoutService.DeleteReportLayout(oExisteReportParams)
+                    oObjGlobal.SBOApp.StatusBar.SetText("(EXO) - Se borra Report / Layaout existente", SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Warning)
+                End If
+
+
+                Dim oNewReportParams As SAPbobsCOM.ReportLayoutParams = CType(oLayoutService.GetDataInterface(SAPbobsCOM.ReportLayoutsServiceDataInterfaces.rlsdiReportLayoutParams), SAPbobsCOM.ReportLayoutParams)
+                Select Case sTypeCode
+                    Case "RCRI" : oNewReportParams = oLayoutService.AddReportLayoutToMenu(oReport, oForm.DataSources.UserDataSources.Item("UDL").Value.ToString)
+                    Case Else : oNewReportParams = oLayoutService.AddReportLayout(oReport)
+                End Select
 
                 'Get code of the added ReportLayout object 
                 newReportCode = oNewReportParams.LayoutCode
@@ -195,6 +213,8 @@ Public Class EXO_GLOBALES
         Dim oBlobParams As SAPbobsCOM.BlobParams = Nothing
         Dim oKeySegment As SAPbobsCOM.BlobTableKeySegment = Nothing
         Dim oBlob As SAPbobsCOM.Blob = Nothing
+        Dim sReportExiste As String = ""
+        Dim sSQL As String = ""
 #End Region
         Import_Report2 = False
         Try
@@ -218,10 +238,19 @@ Public Class EXO_GLOBALES
 
             Dim newReportCode As String = ""
             Try
-
-                Dim oNewReportParams As SAPbobsCOM.ReportLayoutParams = Nothing
                 ' Add New object 
                 oReport.Category = SAPbobsCOM.ReportLayoutCategoryEnum.rlcCrystal
+
+                'Comprobamos si Existe y borramos
+                sSQL = "SELECT ""DocCode"" FROM  """ & oCompanyDes.CompanyDB & """.""RDOC"" WHERE ""DocName""='" & oForm.DataSources.UserDataSources.Item("UDNOM").Value.ToString & "' "
+                sReportExiste = oObjGlobal.refDi.SQL.sqlStringB1(sSQL)
+                If sReportExiste <> "" Then
+                    Dim oExisteReportParams As SAPbobsCOM.ReportLayoutParams = CType(oLayoutService.GetDataInterface(SAPbobsCOM.ReportLayoutsServiceDataInterfaces.rlsdiReportLayoutParams), SAPbobsCOM.ReportLayoutParams)
+                    oExisteReportParams.LayoutCode = sReportExiste
+                    oLayoutService.DeleteReportLayout(oExisteReportParams)
+                End If
+
+                Dim oNewReportParams As SAPbobsCOM.ReportLayoutParams = CType(oLayoutService.GetDataInterface(SAPbobsCOM.ReportLayoutsServiceDataInterfaces.rlsdiReportLayoutParams), SAPbobsCOM.ReportLayoutParams)
                 Select Case sTypeCode
                     Case "RCRI" : oNewReportParams = oLayoutService.AddReportLayoutToMenu(oReport, "12800")
                     Case Else : oNewReportParams = oLayoutService.AddReportLayout(oReport)
@@ -229,8 +258,6 @@ Public Class EXO_GLOBALES
 
                 'Get code of the added ReportLayout object 
                 newReportCode = oNewReportParams.LayoutCode
-
-
 
             Catch ex As Exception
                 Dim sError As String = Err.Description
